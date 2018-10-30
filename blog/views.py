@@ -1,8 +1,30 @@
-#from django.shortcuts import render
-# Create your views here.
-from django.http import HttpResponse
-import datetime
-def today_is(request):
-    now = datetime.datetime.now()
-    html = "<html><body>Current date and time of the day: {0}</body></html>".format(now)
-    return HttpResponse(html)
+from django.views import generic
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse
+
+# Create your views here
+from blog.models import Products
+
+
+# View for index page
+class IndexView(generic.ListView):
+    context_object_name = 'product_list'
+    template_name = 'blog/index.html'
+
+    def all(self):
+        return self.get_queryset()
+
+
+class ProductEntry(CreateView):
+    model = Products
+    fields = ['product_title', 'product_price', 'product_description']
+
+
+class ProductUpdate(UpdateView):
+    model = Products
+    fields = ['product_title', 'product_price', 'product_description']
+
+
+class ProductDelete(DeleteView):
+    model = Products
+    success_url = reverse('blog:index')
